@@ -138,7 +138,10 @@ function draw() {
     app.clear();
     drawCall.draw();
 
-     mat4.fromTranslation(modelMatrix, vec3.fromValues(2, 1, 0));
+    mat4.fromTranslation(modelMatrix, vec3.fromValues(2, 1, 0));
+    mat4.fromXRotation(rotateXMatrix, time * 0.7000);
+ mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
@@ -162,6 +165,8 @@ function draw() {
      mat4.fromTranslation(modelMatrix, vec3.fromValues(-17, 7, 0));
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 0.7000);
+     mat4.fromYRotation(rotateYMatrix, time * 1.1000);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
      drawCall.draw();
