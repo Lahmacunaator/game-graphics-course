@@ -5,8 +5,13 @@
 // *********************************************************************************************************************
 
 // Home task: change anything you like in this small demo, be creative and make it look cool ;)
+//<<<<<<< HEAD
 // * You can change 3D cube model with any other mesh using Blender WebGL export addon https://gist.github.com/mnstrspeed/c8a61e54fa99cc4ca1e1672e0739eb6e
 // * Change object and camera transformations inside draw() function    
+//=======
+// * You can change 3D cube model with any other mesh using Blender WebGL export addon, check blender/export_webgl.py
+// * Change object and camera transformations inside draw() function
+//>>>>>>> upstream/master
 // * Change colors using bgColor and fgColor variables
 // * Distort object shape inside vertexShader
 // * Distort object colors inside fragmentShader
@@ -139,8 +144,10 @@ function draw() {
     drawCall.draw();
 
     mat4.fromTranslation(modelMatrix, vec3.fromValues(2, 1, 0));
-    mat4.fromXRotation(rotateXMatrix, time * 0.7000);
- mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+    mat4.fromXRotation(rotateXMatrix, time * 0.2000);
+    mat4.fromYRotation(rotateYMatrix, time * 1.1000);
+    mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+    mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
      
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
