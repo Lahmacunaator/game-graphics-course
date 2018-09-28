@@ -72,6 +72,7 @@ let vertexShader = `
     uniform vec4 fgColor;
     uniform mat4 modelViewMatrix;
     uniform mat4 modelViewProjectionMatrix;
+    uniform float time;
     
     layout(location=0) in vec3 position;
     layout(location=1) in vec3 normal;
@@ -80,9 +81,11 @@ let vertexShader = `
     
     void main()
     {
-        gl_Position = modelViewProjectionMatrix * vec4(position, 1.4);
+        vec3 p = position;
+        if (abs(p.x) > 0.96) p *= (sin(time));
+        gl_Position = modelViewProjectionMatrix * vec4(p, 4.0);
         vec3 viewNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
-        color = mix(bgColor * 0.4, fgColor, viewNormal.z) + pow(viewNormal.z, 4.0);
+        color = mix(bgColor * 0.8, fgColor, viewNormal.z) + pow(viewNormal.z, 6.0);
     }
 `;
 
@@ -96,8 +99,8 @@ let fgColor = vec4.fromValues(0.8, 0.1, 0.3, 1.2);
 
 
 app.clearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3])
-    // .depthTest();
-    .cullBackfaces();
+     .depthTest();
+   //.cullBackfaces();
 
 let program = app.createProgram(vertexShader.trim(), fragmentShader.trim());
 
@@ -155,7 +158,11 @@ function draw() {
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
      drawCall.draw();
     
-     mat4.fromTranslation(modelMatrix, vec3.fromValues(-2, 1, 0));
+     mat4.fromTranslation(modelMatrix, vec3.fromValues(-2, 2, 0));
+     mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 2.1000);
+     mat4.fromYRotation(rotateYMatrix, time * 2.1000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
@@ -163,22 +170,32 @@ function draw() {
      drawCall.draw();
     
      mat4.fromTranslation(modelMatrix, vec3.fromValues(-4, 1, 0));
+     mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 2.7000);
+     mat4.fromYRotation(rotateYMatrix, time * 1.1000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
      drawCall.draw();
     
-     mat4.fromTranslation(modelMatrix, vec3.fromValues(-17, 7, 0));
+     mat4.fromTranslation(modelMatrix, vec3.fromValues(-2, 1, 0));
+     mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 1.7000);
+     mat4.fromYRotation(rotateYMatrix, time * 0.1000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
-     mat4.fromXRotation(rotateXMatrix, time * 0.7000);
-     mat4.fromYRotation(rotateYMatrix, time * 1.1000);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
      drawCall.draw();
     
      mat4.fromTranslation(modelMatrix, vec3.fromValues(-3, 1, 1));
+     mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 0.07000);
+     mat4.fromYRotation(rotateYMatrix, time * 0.01000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
@@ -186,11 +203,15 @@ function draw() {
      drawCall.draw();
     
      mat4.fromTranslation(modelMatrix, vec3.fromValues(0.2, -0.3, 0.8));
+     mat4.multiply(modelMatrix, rotateXMatrix, modelMatrix);
+     mat4.multiply(modelMatrix, rotateYMatrix, modelMatrix);
+     mat4.fromXRotation(rotateXMatrix, time * 0.7000);
+     mat4.fromYRotation(rotateYMatrix, time * 1.1000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
-     drawCall.draw();
+     drawCall.draw(); 
 
     requestAnimationFrame(draw);
 }
