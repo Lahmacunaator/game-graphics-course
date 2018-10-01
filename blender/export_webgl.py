@@ -28,7 +28,10 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     filename_ext = ".js"
     filter_glob = StringProperty(default="*.js", options={'HIDDEN'})
 
+<<<<<<< HEAD
     opt_MergeVertexNormal = BoolProperty(name="Merge vertex and normal arrays", description="Merge vertex and normal arrays", default=False)
+=======
+>>>>>>> upstream/master
     opt_FloatDecimals = IntProperty(name="Number of decimals on floats", description="Number of decimals on floats", default=4)
     opt_Scale = FloatProperty(name="Scale", description="Scale", default=1.0)
 
@@ -36,6 +39,7 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     def poll(cls, context):
         return context.active_object != None
 
+<<<<<<< HEAD
     def export_as_webgl_arrays(self, obj, path):
         obj = bpy.context.object
         data = obj.data
@@ -68,6 +72,45 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     def execute(self, context):
         obj = bpy.context.object
         self.export_as_webgl_arrays(obj, self.filepath)
+=======
+    def export_as_webgl_arrays(self, path):
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+        object = bpy.context.object
+        object.data.calc_normals_split()
+
+        vertices = []
+        normals = []
+        uvs = []
+
+        loop_index = 0
+        for l in object.data.loops:
+            vertices.append(object.data.vertices[l.vertex_index].co)
+            normals.append(l.normal)
+            if object.data.uv_layers.active and len(object.data.uv_layers.active.data) > 0:
+                uvs.append(object.data.uv_layers.active.data[loop_index].uv)
+            loop_index = loop_index + 1
+
+        vertices = flatten([list(v) for v in vertices])
+        normals = flatten([list(n) for n in normals])
+        uvs = flatten([list(v) for v in uvs])
+        indices = flatten([polygon_to_tris(list(p.loop_indices)) for p in object.data.polygons])
+
+        float_format = "{:." + str(self.opt_FloatDecimals) + "f}"
+        with open(path, 'w') as f:
+            f.write("// " + object.name + "\n")
+            f.write("var {0}_vertices = [ {1} ];\n".format(
+                object.name, ",".join([float_format.format(v * self.opt_Scale) for v in vertices])))
+            f.write("var {0}_normals = [ {1} ];\n".format(
+                object.name, ",".join([float_format.format(n * self.opt_Scale) for n in normals])))
+            f.write("var {0}_uvs = [ {1} ];\n".format(
+                object.name, ",".join([float_format.format(n) for n in uvs])))
+            f.write("var {0}_indices = [ {1} ];\n".format(
+                object.name, ",".join([str(i) for i in indices])))
+
+    def execute(self, context):
+        self.export_as_webgl_arrays(self.filepath)
+>>>>>>> upstream/master
 
         return {'FINISHED'}
 
