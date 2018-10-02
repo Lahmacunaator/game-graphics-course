@@ -1,3 +1,15 @@
+// *********************************************************************************************************************
+// **                                                                                                                 **
+// **             Texturing example, Cube is mapped with 2D texture, skybox is mapped with a Cubemap                  **
+// **                                                                                                                 **
+// *********************************************************************************************************************
+
+// * Change textures
+// * Combine several textures in fragment shaders
+// * Distort UV coordinates
+// * Change texture filtering for pixel graphics
+// * Use wrapping modes for texture tiling
+
 
 let positions = new Float32Array([
     // front
@@ -246,8 +258,8 @@ let skyboxViewProjectionInverse = mat4.create();
 
 
 loadImages(["images/texture.jpg", "images/cubemap.jpg"], function (images) {
-    let drawCall = app.createDrawCall(program, vertexArray, PicoGL.TRIANGLES)
-        .texture("tex", app.createTexture2D(images[0], images[0].width, images[0].height, {flipY: true}));
+    let drawCall = app.createDrawCall(program, vertexArray)
+        .texture("tex", app.createTexture2D(images[0], images[0].width, images[0].height, {flipY: true, magFilter: PicoGL.NEAREST, wrapT: PicoGL.REPEAT}));
 
     let skyboxDrawCall = app.createDrawCall(skyboxProgram, skyboxArray)
         .texture("cubemap", app.createCubemap({cross: images[1]}));
@@ -259,12 +271,12 @@ loadImages(["images/texture.jpg", "images/cubemap.jpg"], function (images) {
         let time = new Date().getTime() / 1000 - startTime;
 
         mat4.perspective(projMatrix, Math.PI / 2, app.width / app.height, 0.1, 100.0);
-        let camPos = vec3.rotateY(vec3.create(), vec3.fromValues(0, -1, 3), vec3.fromValues(0, 0, 0), time * 0.05);
+        let camPos = vec3.rotateY(vec3.create(), vec3.fromValues(0, -1, 2), vec3.fromValues(0, 0, 0), time * 0.05);
         mat4.lookAt(viewMatrix, camPos, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
         mat4.multiply(viewProjMatrix, projMatrix, viewMatrix);
 
-        mat4.fromXRotation(rotateXMatrix, time * 0.1136);
-        mat4.fromYRotation(rotateYMatrix, time * 0.2235);
+        mat4.fromXRotation(rotateXMatrix, time * 0.1136 - Math.PI / 2);
+        mat4.fromZRotation(rotateYMatrix, time * 0.2235);
         mat4.multiply(modelMatrix, rotateXMatrix, rotateYMatrix);
 
         mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
