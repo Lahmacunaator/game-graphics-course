@@ -28,10 +28,9 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     filename_ext = ".js"
     filter_glob = StringProperty(default="*.js", options={'HIDDEN'})
 
-<<<<<<< HEAD
     opt_MergeVertexNormal = BoolProperty(name="Merge vertex and normal arrays", description="Merge vertex and normal arrays", default=False)
-=======
->>>>>>> upstream/master
+
+
     opt_FloatDecimals = IntProperty(name="Number of decimals on floats", description="Number of decimals on floats", default=4)
     opt_Scale = FloatProperty(name="Scale", description="Scale", default=1.0)
 
@@ -39,7 +38,7 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     def poll(cls, context):
         return context.active_object != None
 
-<<<<<<< HEAD
+
     def export_as_webgl_arrays(self, obj, path):
         obj = bpy.context.object
         data = obj.data
@@ -72,7 +71,7 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
     def execute(self, context):
         obj = bpy.context.object
         self.export_as_webgl_arrays(obj, self.filepath)
-=======
+
     def export_as_webgl_arrays(self, path):
         bpy.ops.object.mode_set(mode='OBJECT')
 
@@ -110,7 +109,7 @@ class ExportWebGL(bpy.types.Operator, ExportHelper):
 
     def execute(self, context):
         self.export_as_webgl_arrays(self.filepath)
->>>>>>> upstream/master
+
 
         return {'FINISHED'}
 
