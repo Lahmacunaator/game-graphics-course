@@ -45,7 +45,8 @@ let fragmentShader = `
     #version 300 es
     precision highp float;
     
-    uniform sampler2D tex;    
+    uniform sampler2D tex;
+    uniform float time;
     
     in vec2 v_uv;
     
@@ -53,7 +54,8 @@ let fragmentShader = `
     
     void main()
     {        
-        outColor = texture(tex, v_uv);
+        outColor = texture(tex, (v_uv + 0.5) * 1.5 * cos(time * 2.0))
+                / texture(tex, (v_uv + 0.5) * 3.0 * cos(time * 8.46641));
     }
 `;
 
@@ -71,7 +73,7 @@ let vertexShader = `
     
     void main()
     {
-        gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);           
+        gl_Position = modelViewProjectionMatrix * vec4(position, 1.0) * 1.2;           
         v_uv = uv;
     }
 `;
@@ -83,14 +85,16 @@ let skyboxFragmentShader = `
     precision mediump float;
     
     uniform samplerCube cubemap;
+    uniform samplerCube cubemap2;
     uniform mat4 viewProjectionInverse;
+    uniform float time;
     in vec4 v_position;
     
     out vec4 outColor;
     
     void main() {
       vec4 t = viewProjectionInverse * v_position;
-      outColor = texture(cubemap, normalize(t.xyz / t.w));
+      outColor = texture(cubemap, normalize(t.xyz / t.w)) - 0.2 * tan(time + 1.0) * texture(cubemap2, normalize(t.xyz / t.w ));
     }
 `;
 
@@ -135,10 +139,19 @@ let skyboxViewProjectionInverse = mat4.create();
 
 loadImages(["images/doyoknodawaelapis.jpg", "images/Knuckles.jpg"], function (images) {
     let drawCall = app.createDrawCall(program, vertexArray)
-        .texture("tex", app.createTexture2D(images[0], images[0].width, images[0].height, {flipY: true, magFilter: PicoGL.NEAREST, wrapT: PicoGL.REPEAT}));
+        .texture("tex", app.createTexture2D(images[0], images[0].width, images[0].height, {flipY: true, magFilter: PicoGL.ANISOTROPIC, wrapT: PicoGL.MIRRORED_REPEAT, wrapS: PicoGL.MIRRORED_REPEAT}));
 
     let skyboxDrawCall = app.createDrawCall(skyboxProgram, skyboxArray)
-        .texture("cubemap", app.createCubemap({cross: images[1]}));
+        .texture("cubemap", app.createCubemap({cross: images[1]}))
+        
+        .texture("cubemap2", app.createCubemap({
+            negX: images[0],
+            posX: images[0],
+            negY: images[0],
+            posY: images[0],
+            negZ: images[0],
+            posZ: images[0]
+        }));
 
     let startTime = new Date().getTime() / 1000;
 
@@ -146,13 +159,13 @@ loadImages(["images/doyoknodawaelapis.jpg", "images/Knuckles.jpg"], function (im
     function draw() {
         let time = new Date().getTime() / 1000 - startTime;
 
-        mat4.perspective(projMatrix, Math.PI / 2, app.width / app.height, 0.1, 100.0);
-        let camPos = vec3.rotateY(vec3.create(), vec3.fromValues(0, -1, 2), vec3.fromValues(0, 0, 0), time * 1.05);
+        mat4.perspective(projMatrix, Math.PI / 2.2, app.width / app.height, 0.1, 100.0);
+        let camPos = vec3.rotateY(vec3.create(), vec3.fromValues(0, -1, 2), vec3.fromValues(0, 0, 0), time * 0.55);
         mat4.lookAt(viewMatrix, camPos, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
         mat4.multiply(viewProjMatrix, projMatrix, viewMatrix);
 
-        mat4.fromXRotation(rotateXMatrix, time * 0.7136 - Math.PI / 2);
-        mat4.fromZRotation(rotateYMatrix, time * 0.7235);
+        mat4.fromXRotation(rotateXMatrix, time * 0.09136 - Math.PI / 2);
+        mat4.fromZRotation(rotateYMatrix, time * 0.09235);
         mat4.multiply(modelMatrix, rotateXMatrix, rotateYMatrix);
 
         mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
