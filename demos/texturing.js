@@ -54,8 +54,8 @@ let fragmentShader = `
     
     void main()
     {        
-        outColor = texture(tex, (v_uv + 0.5) * 1.5 * cos(time * 2.0))
-                / texture(tex, (v_uv + 0.5) * 3.0 * cos(time * 8.46641));
+        outColor = texture(tex, (v_uv + 0.5) * 1.5 * sin(time))
+                / texture(tex, (v_uv + 0.5) * 3.0 * tan(time * 1.46641));
     }
 `;
 
@@ -180,10 +180,13 @@ loadImages(["images/doyoknodawaelapis.jpg", "images/Knuckles.jpg"], function (im
         app.clear();
 
         app.noDepthTest();
+        skyboxDrawCall.uniform("time", time);
         skyboxDrawCall.uniform("viewProjectionInverse", skyboxViewProjectionInverse);
         skyboxDrawCall.draw();
 
         app.depthTest();
+        
+        drawCall.uniform("time", time);
         drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
         drawCall.draw();
 
