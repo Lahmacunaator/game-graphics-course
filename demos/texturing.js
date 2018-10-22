@@ -54,7 +54,7 @@ let fragmentShader = `
     
     void main()
     {        
-        outColor = texture(tex, (v_uv + 0.5) * 1.5 * sin(time))
+        outColor = texture(tex, (v_uv + 0.5) * 1.5 * sin(time * 1.4))
                 / texture(tex, (v_uv + 0.5) * 3.0 * tan(time * 1.46641));
     }
 `;
