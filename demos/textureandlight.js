@@ -13,7 +13,7 @@ let triangles = new Uint16Array([ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
 
 let ambientLightColor = vec3.fromValues(0.05, 0.05, 0.1);
 let numberOfLights = 2;
-let lightColors = [vec3.fromValues(1.0, 0.0, 0.2), vec3.fromValues(0.0, 0.1, 0.2)];
+let lightColors = [vec3.fromValues(1.0, 0.0, 0.2), vec3.fromValues(0.0, 1.1, 0.2)];
 let lightInitialPositions = [vec3.fromValues(5, 0, 2), vec3.fromValues(-5, 0, 2)];
 let lightPositions = [vec3.create(), vec3.create()];
 
@@ -66,7 +66,8 @@ let fragmentShader = `
     
     void main() {                      
         // For Phong shading (per-fragment) move color calculation from vertex to fragment shader
-        outColor = calculateLights(normalize(vNormal), vPosition) * texture(tex, (v_uv + 0.5) * 1.5 * sin(time * 1.4));
+        outColor = calculateLights(normalize(vNormal), vPosition) * (texture(tex, (v_uv + 0.5) * 1.5 * sin(time * 1.4))
+                / texture(tex, (v_uv + 0.5) * 3.0 * log(time * 1.46641)));
         //outColor = vColor;
     }
 `;
