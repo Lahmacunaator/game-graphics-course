@@ -75,9 +75,9 @@
                 document.body.appendChild(canvas);
 
                 app = PicoGL.createApp(canvas, {preserveDrawingBuffer: true});
-                window.onresize = function() {
+                window.addEventListener("resize", function() {
                     app.resize(window.innerWidth, window.innerHeight);
-                };
+                });
 
                 var thescript = document.createElement('script');
                 thescript.setAttribute('type','text/javascript');
@@ -108,6 +108,7 @@
                 <a href="?load=demos/texturingspecial.js">02.1 Texturing special</a>
 
                 <a href="?load=demos/lighting.js">03 Lighting</a>
+<<<<<<< HEAD
                 
                 <a href="?load=demos/textureandlight.js">03.1 Texture+Light</a>
                 
@@ -115,6 +116,9 @@
                 
                 <a href="?load=demos/earth.js">03.3 The Earth</a>
 
+=======
+                <a href="?load=demos/reflection.js">04 Reflection</a>
+>>>>>>> upstream/master
             </p>
         </p>
     </body>
