@@ -88,7 +88,7 @@ let vertexShader = `
         if (abs(p.x) > 0.96) p *= (sin(time));
         gl_Position = modelViewProjectionMatrix * vec4(p, 4.0);
         vec3 viewNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz;
-        color = mix(bgColor * 0.8, fgColor, viewNormal.z) + pow(viewNormal.z, 6.0);
+        color = mix(bgColor * 0.01 * time, fgColor * time, viewNormal.z) + pow(viewNormal.z, 6.0);
     }
 `;
 
@@ -102,8 +102,8 @@ let fgColor = vec4.fromValues(0.8, 0.1, 0.3, 1.2);
 
 
 app.clearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3])
-     .depthTest();
-   //.cullBackfaces();
+     .depthTest()
+     .cullBackfaces();
 
 let program = app.createProgram(vertexShader.trim(), fragmentShader.trim());
 
@@ -212,6 +212,7 @@ function draw() {
      mat4.fromYRotation(rotateYMatrix, time * 1.1000);
      mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
      mat4.multiply(modelViewProjectionMatrix, viewProjMatrix, modelMatrix);
+     drawCall.uniform("time", time);
      drawCall.uniform("modelViewMatrix", modelViewMatrix);
      drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
      drawCall.draw(); 
