@@ -74,7 +74,7 @@ let shadowFragmentShader = `
     
     void main() {
         // Uncomment to see the depth buffer of the shadow map    
-        fragColor = vec4((gl_FragCoord.z - 0.98) * 50.0);    
+        //fragColor = vec4((gl_FragCoord.z - 0.98) * 50.0);    
     }
 `;
 
@@ -104,10 +104,10 @@ let vertexArray = app.createVertexArray()
 
 // Change the shadow texture resolution to checkout the difference
 let shadowDepthTarget = app.createTexture2D(512, 512, {
-        format: PicoGL.DEPTH_COMPONENT,
-        compareMode: PicoGL.COMPARE_REF_TO_TEXTURE,
-        magFilter: PicoGL.LINEAR,
-    });
+    format: PicoGL.DEPTH_COMPONENT,
+    compareMode: PicoGL.COMPARE_REF_TO_TEXTURE,
+    magFilter: PicoGL.LINEAR,
+});
 let shadowBuffer = app.createFramebuffer().depthTarget(shadowDepthTarget);
 
 let time = 0;
@@ -128,17 +128,17 @@ mat4.lookAt(lightViewMatrix, lightPosition, vec3.fromValues(0, 0, 0), vec3.fromV
 
 
 let drawCall = app.createDrawCall(program, vertexArray)
-                        .uniform("baseColor", fgColor)
-                        .uniform("ambientColor", vec4.scale(vec4.create(), bgColor, 0.7))
-                        .uniform("modelMatrix", modelMatrix)
-                        .uniform("modelViewProjectionMatrix", modelViewProjectionMatrix)
-                        .uniform("cameraPosition", cameraPosition)
-                        .uniform("lightPosition", lightPosition)
-                        .uniform("lightModelViewProjectionMatrix", lightModelViewProjectionMatrix)
-                        .texture("shadowMap", shadowDepthTarget);
+    .uniform("baseColor", fgColor)
+    .uniform("ambientColor", vec4.scale(vec4.create(), bgColor, 0.7))
+    .uniform("modelMatrix", modelMatrix)
+    .uniform("modelViewProjectionMatrix", modelViewProjectionMatrix)
+    .uniform("cameraPosition", cameraPosition)
+    .uniform("lightPosition", lightPosition)
+    .uniform("lightModelViewProjectionMatrix", lightModelViewProjectionMatrix)
+    .texture("shadowMap", shadowDepthTarget);
 
 let shadowDrawCall = app.createDrawCall(shadowProgram, vertexArray)
-                        .uniform("lightModelViewProjectionMatrix", lightModelViewProjectionMatrix);
+    .uniform("lightModelViewProjectionMatrix", lightModelViewProjectionMatrix);
 
 function renderShadowMap() {
     app.drawFramebuffer(shadowBuffer);

@@ -143,7 +143,7 @@ loadImages(["images/doyoknodawaelapis.jpg", "images/Knuckles.jpg"], function (im
 
     let skyboxDrawCall = app.createDrawCall(skyboxProgram, skyboxArray)
         .texture("cubemap", app.createCubemap({cross: images[1]}))
-        
+
         .texture("cubemap2", app.createCubemap({
             negX: images[0],
             posX: images[0],
@@ -185,7 +185,7 @@ loadImages(["images/doyoknodawaelapis.jpg", "images/Knuckles.jpg"], function (im
         skyboxDrawCall.draw();
 
         app.depthTest();
-        
+
         drawCall.uniform("time", time);
         drawCall.uniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
         drawCall.draw();
